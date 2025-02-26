@@ -1,0 +1,1 @@
+/Users/flakerimismani/BaseProjects/nuxt/structures/clients/components/GridCard.vue
