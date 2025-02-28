@@ -10,7 +10,8 @@ export default defineNuxtConfig({
   ],
  
   extends: [
-    './structures/clients'
+    './structures/clients',
+    './structures/supplier'
   ],
   
   css: ['~/assets/css/main.css'],
