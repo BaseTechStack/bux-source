@@ -1,35 +1,40 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+ import { computed } from 'vue'
 
 const props = withDefaults(defineProps<{
   pageSize: number
   options?: number[]
 }>(), {
-  pageSize: 10,
+  pageSize: 12,
   options: () => [10, 20, 50, 100]
 })
 
 const emit = defineEmits<{
-  'update:pageSize': [pageSize: number]
+  'update:pageSize': [value: number]
 }>()
 
-// Default options if not provided
-const defaultOptions = [10, 20, 50, 100]
+const items = computed(() => {
+  return props.options.map(value => value.toString())
+})
 
-// Use provided options or default
-const pageSizeOptions = computed(() => props.options || defaultOptions)
-
-// Create a computed property for the current pageSize that emits an event when changed
-const currentPageSize = computed({
-  get: () => props.pageSize,
-  set: (value) => emit('update:pageSize', value)
+const selectedValue = computed({
+  get: () => props.pageSize.toString(),
+  set: (newValue: string) => {
+    const numValue = parseInt(newValue, 10)
+    emit('update:pageSize', numValue)
+  }
 })
 </script>
+
 <template>
   <div class="flex items-center gap-2">
     <span class="text-sm text-gray-600 dark:text-gray-400">Per page:</span>
-    <USelectMenu v-model="currentPageSize" :options="pageSizeOptions" />
-
+ 
+    <USelect
+      v-model="selectedValue"
+      :items="items"
+      size="sm"
+      class="w-24"
+    />
   </div>
 </template>
- 

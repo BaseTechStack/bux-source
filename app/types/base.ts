@@ -1,3 +1,4 @@
+
 export interface BasePagination {
   total: number
   page: number

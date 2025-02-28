@@ -21,7 +21,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Client } from '../../stores/client'
+import type { Client } from '../stores/client'
 import { ref, h, resolveComponent } from 'vue'
 import type { TableColumn } from '@nuxt/ui'
 
@@ -44,6 +44,7 @@ const emit = defineEmits<{
 
 const search = ref('')
 
+// Use resolveComponent to access the BaseCrudActions component
 const BaseCrudActions = resolveComponent('BaseCrudActions')
 
 const columns: TableColumn<Client>[] = [
@@ -68,9 +69,10 @@ const columns: TableColumn<Client>[] = [
           structure: 'clients',
           item: row.original,
           actions: 'view,edit,delete',
-          onView: () => emit('view', row.original),
-          onEdit: () => emit('edit', row.original),
-          onDelete: () => emit('delete', row.original)
+          // Fix event names to match BaseCrudActions emits
+          view: (item: Client) => emit('view', item),
+          edit: (item: Client) => emit('edit', item),
+          delete: (item: Client) => emit('delete', item)
         })
       ])
     }

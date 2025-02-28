@@ -1,18 +1,11 @@
-export interface Client {
-  id: string
-  name: string
+import type { BaseItem } from '@@/app/stores/baseStore'
+
+export interface Client extends BaseItem {
+  firstName: string
+  lastName: string
   email: string
-  phone?: string
-  address?: string
-  company?: string
+  phone: string
   createdAt: string
   updatedAt: string
   // Add any additional fields as needed
-}
-
-export interface BasePagination {
-  total: number
-  page: number
-  pageSize: number
-  totalPages: number
 }

@@ -8,40 +8,44 @@
             <UNavigationMenu
                 color="neutral"
                 orientation="vertical"
-                :items="items"
+                :items="mainNavItems"
                 class="w-full"
             />
         </ClientOnly>
     </div>
-    <div class="p-4 border-t border-gray-200 dark:border-gray-800 flex-shrink-0">
+    <div class="p-4 border-b border-gray-200 dark:border-gray-800 flex-shrink-0">
         <ClientOnly>
-            <AppUserProfile />
+            <UNavigationMenu
+                color="neutral"
+                orientation="vertical"
+                :items="bottomNavItems"
+                class="w-full"
+            />
+            <AppUserProfile class="mt-4" />
         </ClientOnly>
     </div>
 </aside>
 </template>
 
 <script setup lang="ts">
-const items = ref([
-  // Navigation items
-  [
+const mainNavItems = ref([
     {
-      label: 'Dashboard',
-      icon: 'i-heroicons-home',
-      to: '/app/dashboard'
+        label: 'Dashboard',
+        icon: 'i-heroicons-home',
+        to: '/app/dashboard'
     },
     {
-      label: 'Clients',
-      icon: 'i-heroicons-user-group',
-      to: '/clients'
-    },
-  ],
-  [
+        label: 'Clients',
+        icon: 'i-heroicons-user-group',
+        to: '/clients'
+    }
+])
+
+const bottomNavItems = ref([
     {
-      label: 'Settings',
-      icon: 'i-heroicons-cog-6-tooth',
-      to: '/app/settings'
-    },
-  ]
+        label: 'Settings',
+        icon: 'i-heroicons-cog-6-tooth',
+        to: '/app/settings'
+    }
 ])
 </script>

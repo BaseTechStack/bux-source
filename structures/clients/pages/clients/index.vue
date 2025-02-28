@@ -32,87 +32,83 @@
           </UButton>
         </div>
       </div>
-  <!-- Pagination -->
-  <div class="mt-6 flex py-5 justify-between items-center">
+      
+      <!-- Pagination -->
+      <div class="mt-6 flex py-5 justify-between items-center">
         <BasePerPage
-          v-model:pageSize="pageSize"
-          :options="store.viewMode === 'grid' ? [12, 24, 36, 48] : [10, 20, 50, 100]"
+          :pageSize="store.pagination.pageSize"
           @update:pageSize="handlePageSizeChange"
+          :options="store.viewMode === 'grid' ? [12, 24, 36, 48] : [10, 20, 50, 100]"
         />
+      
         <BasePagination
-          :total="pagination.total"
-          :page="currentPage"
-          :pageSize="pageSize"
+          :total="store.pagination.total"
+          :page="store.pagination.page"
+          :items-per-page="store.pagination.pageSize"
+          :total-pages="store.pagination.totalPages"
           @update:page="handlePageChange"
         />
       </div>
-      <ModeGrid 
+
+      <Grid 
         v-if="store.viewMode === 'grid'" 
-        :clients="clients" 
+        :clients="store.items" 
         @edit="editClient" 
         @delete="deleteClient" 
         @view="viewClient"
-        :current-page="currentPage"
-        :page-size="pageSize"
+        :current-page="store.pagination.page"
+        :page-size="store.pagination.pageSize"
       />
-      <ModeTable 
+      <Table 
         v-else 
-        :clients="clients" 
+        :clients="store.items" 
         @edit="editClient" 
         @delete="deleteClient" 
         @view="viewClient"
-        :current-page="currentPage"
-        :page-size="pageSize"
+        :current-page="store.pagination.page"
+        :page-size="store.pagination.pageSize"
       />
-      
-    
       
       <!-- Modals -->
-      <ClientsAddModal 
-        v-model:open="modalState.add.isOpen" 
-        @close="closeModal('add')"
-        @added="store.fetchClients"
-        title="New Client"
-        description="Add a new client to your system"
+      <AddModal 
+        v-model="modalState.add.isOpen" 
+        @client-added="handleClientAdded"
       />
       
-      <ClientsEditModal 
-        v-model:open="modalState.edit.isOpen" 
+      <EditModal 
+        v-model="modalState.edit.isOpen" 
         :item="modalState.edit.item"
-        @close="closeModal('edit')"
-        title="Edit Client"
-        description="Update client information"
+        @client-updated="handleClientAdded"
       />
       
-      <ClientsViewModal 
-        v-model:open="modalState.view.isOpen" 
+      <ViewModal 
+        v-model="modalState.view.isOpen" 
         :item="modalState.view.item"
-        @close="closeModal('view')"
-        title="View Client"
-        description="View client details"
       />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue'
-import { storeToRefs } from 'pinia'
-import { useClientsStore } from '../../stores/clientsStore'
+import { ref, onMounted } from 'vue'
+import { useClientsStore, fetchClients } from '../../stores/clientsStore'
 import type { Client } from '../../stores/client'
-import ClientsAddModal from '../../components/ClientsAddModal.vue'
-import ClientsEditModal from '../../components/ClientsEditModal.vue'
-import ClientsViewModal from '../../components/ClientsViewModal.vue'
-   
-const store = useClientsStore()
-const { clients, pagination } = storeToRefs(store)
 
-// Define proper types for modal state
 interface ModalState {
-  add: { isOpen: boolean };
-  edit: { isOpen: boolean; item: Client | null };
-  view: { isOpen: boolean; item: Client | null };
+  add: {
+    isOpen: boolean
+  }
+  edit: {
+    isOpen: boolean
+    item: Client | null
+  }
+  view: {
+    isOpen: boolean
+    item: Client | null
+  }
 }
+
+const store = useClientsStore()
 
 const modalState = ref<ModalState>({
   add: { isOpen: false },
@@ -120,54 +116,24 @@ const modalState = ref<ModalState>({
   view: { isOpen: false, item: null },
 })
 
-const currentPage = ref(1)
-const pageSize = ref(10)
-
-onMounted(async () => {
-  if (!store.viewMode) {
-    store.setViewMode('grid') // Set default view mode if not set
-  }
-  await store.fetchClients()
-  // Initialize currentPage from store
-  currentPage.value = pagination.value.page
-  pageSize.value = pagination.value.pageSize
-})
-
-// Watch for pagination changes from the store
-watch(() => pagination.value, (newPagination) => {
-  currentPage.value = newPagination.page
-  pageSize.value = newPagination.pageSize
-}, { deep: true })
-
-// Watch for view mode changes to adjust page size
-watch(() => store.viewMode, async (newMode) => {
-  // Adjust page size based on view mode
-  const newPageSize = newMode === 'grid' ? 12 : 10
-  if (pageSize.value !== newPageSize) {
-    await store.setPageSize(newPageSize)
-  }
-}, { immediate: true })
-
-// Watch for local page size changes
-watch(() => pageSize.value, async (newSize, oldSize) => {
-  if (oldSize && newSize !== oldSize) {
-    await store.setPageSize(newSize)
-  }
+// Initialize data
+onMounted(() => {
+  fetchClients()
 })
 
 const editClient = (client: Client) => {
-  modalState.value.edit.isOpen = true
   modalState.value.edit.item = client
+  modalState.value.edit.isOpen = true
 }
 
 const viewClient = (client: Client) => {
-  modalState.value.view.isOpen = true
   modalState.value.view.item = client
+  modalState.value.view.isOpen = true
 }
 
-const deleteClient = async (client: Client) => {
-  if (confirm('Are you sure you want to delete this client?')) {
-    await store.deleteClient(client.id)
+const deleteClient = (client: Client) => {
+  if (confirm(`Are you sure you want to delete ${client.firstName} ${client.lastName}?`)) {
+    store.delete(client.id)
   }
 }
 
@@ -178,32 +144,17 @@ const closeModal = (type: 'add' | 'edit' | 'view') => {
   }
 }
 
-const handlePageChange = async (page: number) => {
-  currentPage.value = page
-  await store.fetchClients(page, pageSize.value)
+const handlePageChange = (page: number) => {
+  console.log('ClientsPage: Page change event received with page:', page)
+  fetchClients(page)
 }
 
 const handlePageSizeChange = async (size: number) => {
+  // Store's setPageSize now automatically fetches data
   await store.setPageSize(size)
 }
 
-// Initialize pageSize from store
-onMounted(() => {
-  pageSize.value = store.pagination.pageSize
-})
-
-// Watch for store pagination changes
-watch(() => store.pagination.pageSize, (newSize) => {
-  if (newSize !== pageSize.value) {
-    pageSize.value = newSize
-  }
-})
-
-// Watch for view mode changes
-watch(() => store.viewMode, (newMode) => {
-  const defaultSize = newMode === 'grid' ? 12 : 10
-  if (pageSize.value !== defaultSize) {
-    handlePageSizeChange(defaultSize)
-  }
-})
+const handleClientAdded = () => {
+  fetchClients(store.pagination.page)
+}
 </script>

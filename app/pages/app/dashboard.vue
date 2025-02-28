@@ -28,14 +28,7 @@
   </UCarousel>
 
       <!-- Quick Actions -->
-
-      <USlideover>
-    <UButton label="Open" color="neutral" variant="subtle" />
-
-    <template #content>
-      <Placeholder class="h-full m-4" />
-    </template>
-  </USlideover>
+ 
       <div class="bg-white p-6 rounded-lg shadow">
         <h2 class="text-lg font-semibold mb-4">Quick Actions</h2>
         <div class="space-y-4">
