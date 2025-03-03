@@ -10,8 +10,6 @@ export default defineNuxtConfig({
   ],
  
   extends: [
-    './structures/clients',
-    './structures/supplier'
   ],
   
   css: ['~/assets/css/main.css'],
@@ -34,7 +32,6 @@ export default defineNuxtConfig({
         class: 'h-full antialiased'
       }
     }
-  },
-
-  compatibilityDate: '2024-11-27'
+  }, 
+  compatibilityDate:  '2025-01-27',
 })
