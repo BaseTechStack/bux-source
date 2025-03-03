@@ -1,14 +1,25 @@
+// Import getActivePinia to check if Pinia is initialized
+import { getActivePinia } from 'pinia'
 import { useAuthStore } from '../stores/authStore'
 
 // Use relative API path for Nuxt server routes
 const API_URL = 'http://localhost:8001/api'
 
 export const useApi = () => {
-  const authStore = useAuthStore()
+  // Only use authStore if we're in a component or if Pinia is initialized
+  // This prevents the "no active Pinia" error
+  const getAuthStore = () => {
+    if (process.client && !getActivePinia()) {
+      console.warn('No active Pinia instance found when accessing authStore in useApi')
+      return { logout: async () => console.warn('Cannot logout: No active Pinia') }
+    }
+    return useAuthStore()
+  }
 
   const handleResponse = async (response: Response) => {
     if (response.status === 401) {
       console.log('[API] Received 401 response, logging out')
+      const authStore = getAuthStore()
       await authStore.logout()
       return null
     }

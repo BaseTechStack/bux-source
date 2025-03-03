@@ -1,10 +1,4 @@
-import { useAuthStore } from '~/stores/authStore'
-
+// Auth initialization is now handled in the pinia plugin
 export default defineNuxtPlugin(() => {
-  // Only run on client side
-  if (import.meta.client) {
-    const authStore = useAuthStore()
-    // Initialize auth state from localStorage
-    authStore.init()
-  }
+  console.log('[Auth Plugin] Auth plugin running - initialization handled by pinia plugin')
 })

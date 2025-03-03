@@ -1,8 +1,7 @@
-import { defineStore, type StoreDefinition } from 'pinia'
+import { defineStore, getActivePinia, type StoreDefinition } from 'pinia'
 import type { BasePagination } from '../types/base'
 import type { BaseService } from '../services/baseService'
-import type { UnwrapRef } from 'vue'
-
+ 
 export type ViewMode = 'grid' | 'table'
 
 export interface BaseState<T> {
@@ -45,6 +44,10 @@ export function defineBaseStore<T extends BaseItem>(
   viewModeKey: string,
   service: BaseService<T>
 ) {
+  // Ensure we have a valid Pinia instance
+  if (process.client && !getActivePinia()) {
+    console.warn(`No active Pinia instance found when creating store '${name}'. This may cause issues.`)
+  }
   return defineStore(name, {
     state: (): BaseState<T> => ({
       items: [],
