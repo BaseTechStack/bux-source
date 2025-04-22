@@ -2,14 +2,15 @@
 import { getActivePinia } from 'pinia'
 import { useAuthStore } from '../stores/authStore'
 
-// Use relative API path for Nuxt server routes
-const API_URL = 'http://localhost:8001/api'
+// Get API URL from runtime config
+const config = useRuntimeConfig()
+const API_URL = config.public.apiUrl
 
 export const useApi = () => {
   // Only use authStore if we're in a component or if Pinia is initialized
   // This prevents the "no active Pinia" error
   const getAuthStore = () => {
-    if (process.client && !getActivePinia()) {
+    if (import.meta.client && !getActivePinia()) {
       console.warn('No active Pinia instance found when accessing authStore in useApi')
       return { logout: async () => console.warn('Cannot logout: No active Pinia') }
     }

@@ -48,6 +48,29 @@ yarn dev
 bun run dev
 ```
 
+## GitHub Actions Workflow
+
+This project includes a pre-configured GitHub Actions workflow template that can be used for CI/CD. The template is stored in the `github/workflows` directory (without the leading dot) to prevent it from being activated immediately upon project creation.
+
+### Activating GitHub Actions
+
+To enable GitHub Actions for your project:
+
+1. Rename the `github` directory to `.github`:
+
+```bash
+mv github .github
+```
+
+2. Configure the necessary secrets in your GitHub repository settings:
+   - `CAPROVER_SERVER`: Your CapRover server URL
+   - `CAPROVER_APP`: The name of your CapRover application
+   - `CAPROVER_APP_TOKEN`: Your CapRover application token
+
+3. Push your changes to GitHub
+
+The workflow will automatically build and deploy your Nuxt application to CapRover when changes are pushed to the main branch.
+
 ## Production
 
 Build the application for production:
