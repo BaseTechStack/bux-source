@@ -3,6 +3,18 @@ export default defineNuxtConfig({
   ssr: false,
   devtools: { enabled: true },
 
+  runtimeConfig: {
+    public: {
+      apiUrl: process.env.NODE_ENV === 'production' 
+        ? 'https://APPNAME-api.base.al/api'
+        : (process.env.API_URL || 'http://localhost:8001/api')
+    }
+  },
+
+  nitro: {
+    preset: 'static'
+  },
+
   modules: [
     '@nuxt/ui',
     '@nuxt/eslint',

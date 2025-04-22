@@ -3,7 +3,7 @@
     <div class="h-full flex items-center justify-between px-6">
       <!-- Left side: Copyright -->
       <div class="text-sm text-gray-500 dark:text-gray-400">
-        &copy; {{ new Date().getFullYear() }} Client Management System
+        &copy; {{ new Date().getFullYear() }} APPNAME. All rights reserved.
       </div>
       
       <!-- Right side: Dynamic content -->
