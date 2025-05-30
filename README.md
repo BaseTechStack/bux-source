@@ -1,11 +1,12 @@
 # APPNAME
 
-This project was created using [BaseNuxt](https://github.com/BaseTechStack/basenuxt), a modern Nuxt.js scaffolding tool with pre-configured best practices and UI components.
+This project was created using [BaseUX (bux)](https://github.com/BaseTechStack/bux), a modern command-line tool for scaffolding Bux applications with pre-configured best practices and UI components.
 
 ## Overview
 
 APPNAME is built on Nuxt 3 with the following features:
 
+- **Nuxt 3**: The latest version of Nuxt.js with the best performance and features
 - **Nuxt UI v3**: Modern UI components library with a clean, minimalist design
 - **TypeScript**: Full TypeScript support throughout the codebase
 - **Pinia**: State management solution with a clean, modular approach
@@ -14,39 +15,14 @@ APPNAME is built on Nuxt 3 with the following features:
 
 ## Setup
 
-Make sure to install the dependencies:
+bux new APPNAME
 
-```bash
-# npm
-npm install
+bux run dev
 
-# pnpm
-pnpm install
+bux run build
 
-# yarn
-yarn install
+bux run preview
 
-# bun
-bun install
-```
-
-## Development Server
-
-Start the development server on `http://localhost:3000`:
-
-```bash
-# npm
-npm run dev
-
-# pnpm
-pnpm run dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
-```
 
 ## GitHub Actions Workflow
 
@@ -76,20 +52,26 @@ The workflow will automatically build and deploy your Nuxt application to CapRov
 Build the application for production:
 
 ```bash
-# npm
-npm run build
-
-# pnpm
-pnpm run build
-
-# yarn
-yarn build
-
-# bun
-bun run build
+bux run build
 ```
 
 Locally preview production build:
+
+```bash
+bux run generate
+```
+
+Deploy to CapRover:
+
+```bash
+caprover deploy
+```
+
+Locally preview production build:
+
+```bash
+bux run preview
+```
 
 ```bash
 # npm
